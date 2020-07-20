@@ -48,7 +48,7 @@ services:
     ports:
       - "5140:5140"
     environment:
-      xpack.monitoring.enabled: false
+      xpack.monitoring.enabled: "false"
     restart: always
     depends_on:
       - elasticsearch
