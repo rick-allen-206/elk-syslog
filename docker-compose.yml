@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 services:
   elasticsearch:
     build: ./elasticsearch/
@@ -11,6 +11,11 @@ services:
       cluster.name: "elastic-cluster"
       node.name: elasticsearch
       discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
     restart: always
 
   kibana:
@@ -25,12 +30,11 @@ services:
       server.name: kibana
       server.host: "0"
       elasticsearch.hosts: http://elasticsearch:9200
-      # xpack.security.enabled: "false"
-      # xpack.monitoring.enabled: "false"
-      # xpack.ml.enabled: "false"
-      # xpack.graph.enabled: "false"
-      # xpack.watcher.enabled: "false"
-    restart: always
+      xpack.security.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.reporting.enabled: "false"
     depends_on:
       - elasticsearch
 
@@ -43,6 +47,8 @@ services:
       - elk
     ports:
       - "5140:5140"
+    environment:
+      xpack.monitoring.enabled: false
     restart: always
     depends_on:
       - elasticsearch
