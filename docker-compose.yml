@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  elasticsearch:
+    build: ./elasticsearch/
+    volumes:
+      # - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+    networks:
+      - elk
+    environment:
+      cluster.name: "elastic-cluster"
+      node.name: elasticsearch
+      discovery.type: single-node
+    restart: always
+
+  kibana:
+    build: ./kibana/
+    # volumes:
+      # - ./kibana/config/:/usr/share/kibana/config
+    networks:
+      - elk
+    ports:
+      - "5601:5601"
+    environment:
+      server.name: kibana
+      server.host: "0"
+      elasticsearch.hosts: http://elasticsearch:9200
+      # xpack.security.enabled: "false"
+      # xpack.monitoring.enabled: "false"
+      # xpack.ml.enabled: "false"
+      # xpack.graph.enabled: "false"
+      # xpack.watcher.enabled: "false"
+    restart: always
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    build: ./logstash/
+    volumes:
+      # - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    networks:
+      - elk
+    ports:
+      - "5140:5140"
+    restart: always
+    depends_on:
+      - elasticsearch
+
+networks:
+  elk:
