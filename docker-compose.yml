@@ -11,6 +11,7 @@ services:
       cluster.name: "elastic-cluster"
       node.name: elasticsearch
       discovery.type: single-node
+      discovery.zen.minimum_master_nodes: 1
       xpack.security.enabled: "false"
       xpack.monitoring.enabled: "false"
       xpack.ml.enabled: "false"
