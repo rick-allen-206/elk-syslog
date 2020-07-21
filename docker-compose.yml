@@ -47,7 +47,8 @@ services:
     networks:
       - elk
     ports:
-      - "5140:5140"
+      - "5140:5140/udp"
+      - "5140:5140/tcp"
     environment:
       xpack.monitoring.enabled: "false"
     restart: always
