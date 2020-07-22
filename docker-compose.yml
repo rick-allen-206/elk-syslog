@@ -44,6 +44,7 @@ services:
     volumes:
       # - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/grok_patterns.txt:/logstash/config/grok_patterns.txt
     networks:
       - elk
     ports:
