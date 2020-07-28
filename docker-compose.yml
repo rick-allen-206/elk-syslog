@@ -19,14 +19,26 @@ services:
       xpack.watcher.enabled: "false"
     restart: always
 
+  nginx:
+    build: ./nginx/
+    volumes:
+      - ./nginx/kibana.conf:/etc/nginx/conf.d/kibana.conf
+    networks:
+      - elk
+    ports:
+      - "5601:5601"
+    restart: always
+    depends_on:
+      - kibana
+
   kibana:
     build: ./kibana/
     # volumes:
       # - ./kibana/config/:/usr/share/kibana/config
     networks:
       - elk
-    ports:
-      - "5601:5601"
+    # ports:
+    #   - "5601:5601"
     environment:
       server.name: kibana
       server.host: "0"
@@ -36,6 +48,7 @@ services:
       xpack.ml.enabled: "false"
       xpack.graph.enabled: "false"
       xpack.reporting.enabled: "false"
+    restart: always
     depends_on:
       - elasticsearch
 
