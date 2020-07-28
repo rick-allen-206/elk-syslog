@@ -23,7 +23,7 @@ services:
 
   kibana:
     build: ./kibana/
-    # volumes:
+    volumes:
       - ./kibana/config/:/usr/share/kibana/config
     networks:
       - elk
