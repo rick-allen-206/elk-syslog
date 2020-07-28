@@ -3,51 +3,32 @@ services:
   elasticsearch:
     build: ./elasticsearch/
     volumes:
-      # - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - elk
-    environment:
-      cluster.name: "elastic-cluster"
-      node.name: elasticsearch
-      discovery.type: single-node
-      discovery.zen.minimum_master_nodes: 1
-      xpack.security.enabled: "false"
-      xpack.monitoring.enabled: "false"
-      xpack.ml.enabled: "false"
-      xpack.graph.enabled: "false"
-      xpack.watcher.enabled: "false"
     restart: always
 
-  nginx:
-    build: ./nginx/
-    volumes:
-      - ./nginx/kibana.conf:/etc/nginx/conf.d/kibana.conf
-    networks:
-      - elk
-    ports:
-      - "5601:5601"
-    restart: always
-    depends_on:
-      - kibana
+  # nginx:
+  #   build: ./nginx/
+  #   volumes:
+  #     - ./nginx/kibana.conf:/etc/nginx/conf.d/kibana.conf
+  #   networks:
+  #     - elk
+  #   ports:
+  #     - "5601:5601"
+  #   restart: always
+  #   depends_on:
+  #     - kibana
 
   kibana:
     build: ./kibana/
     # volumes:
-      # - ./kibana/config/:/usr/share/kibana/config
+      - ./kibana/config/:/usr/share/kibana/config
     networks:
       - elk
-    # ports:
-    #   - "5601:5601"
-    environment:
-      server.name: kibana
-      server.host: "0"
-      elasticsearch.hosts: http://elasticsearch:9200
-      xpack.security.enabled: "false"
-      xpack.monitoring.enabled: "false"
-      xpack.ml.enabled: "false"
-      xpack.graph.enabled: "false"
-      xpack.reporting.enabled: "false"
+    ports:
+      - "5601:5601"
     restart: always
     depends_on:
       - elasticsearch
@@ -55,16 +36,14 @@ services:
   logstash:
     build: ./logstash/
     volumes:
-      # - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
-      - ./logstash/grok_patterns.txt:/logstash/config/grok_patterns.txt
+      - ./logstash/config/grok_patterns.txt:/logstash/config/grok_patterns.txt
     networks:
       - elk
     ports:
       - "5140:5140/udp"
       - "5140:5140/tcp"
-    environment:
-      xpack.monitoring.enabled: "false"
     restart: always
     depends_on:
       - elasticsearch
